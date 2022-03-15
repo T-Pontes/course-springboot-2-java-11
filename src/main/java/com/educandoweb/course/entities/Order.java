@@ -19,6 +19,7 @@ import javax.persistence.Table;
 
 import com.educandoweb.course.entities.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_order")
@@ -39,8 +40,8 @@ public class Order implements Serializable {
 	private User client;
 
 	@OneToMany(mappedBy = "id.order")
-	private Set<OrderItem> itens = new HashSet<>();
-	
+	private Set<OrderItem> items = new HashSet<>();
+
 	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
 	private Payment payment;
 	
@@ -98,7 +99,15 @@ public class Order implements Serializable {
 	}
 
 	public Set<OrderItem> getItem(){
-		return itens;
+		return items;
+	}
+	
+	public Double getTotal() {
+		double sum = 0.0;
+		for (OrderItem x : items) {
+			sum += + x.getSubTotal();
+		}
+		return sum;
 	}
 	
 	@Override
